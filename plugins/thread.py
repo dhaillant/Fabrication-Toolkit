@@ -114,10 +114,15 @@ class ProcessThread(Thread):
         shutil.make_archive(os.path.join(output_path, 'backups', backup_name), 'zip', temp_dir)
 
 
+        # create a different folder, with timestamp, at each generation
+        name = ProcessManager.normalize_filename("_".join(("{} {} {}".format(title or filename, revision or '', timestamp).strip()).split()))
+        output_path_issue = os.path.join(project_directory, outputFolder, name)
+        os.makedirs(output_path_issue)
+
         # copy to & open output dir
         try:
-            shutil.copytree(temp_dir, output_path, dirs_exist_ok=True)
-            webbrowser.open("file://%s" % (output_path))
+            shutil.copytree(temp_dir, output_path_issue, dirs_exist_ok=True)
+            webbrowser.open("file://%s" % (output_path_issue))
             shutil.rmtree(temp_dir)
         except Exception as e: 
             webbrowser.open("file://%s" % (temp_dir))
